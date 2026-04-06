@@ -40,7 +40,6 @@ The project's objective is to train a classification model to predict credit car
 │ ├── transformers.py
 │ └── __init__.py
 ├── tests/
-│ ├── test_preprocessor.py
 │ └── test_pipeline.py
 ├── pyproject.toml
 └── README.md
