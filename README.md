@@ -29,7 +29,7 @@ The project's objective is to train a classification model to predict credit car
 │ └── model_cfg.py
 ├── date/
 │ └── raw/
-│ └── amex_data.csv
+│  └── amex_data.csv
 ├── models/
 │ └── model.joblib
 ├── reports/
