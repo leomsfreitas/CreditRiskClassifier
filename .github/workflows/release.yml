@@ -1,0 +1,51 @@
+name: Release Model
+
+on:
+  push:
+    tags:
+      - "v*"
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install -e ".[dev]"
+
+      - name: Run tests
+        run: pytest tests/ -v
+
+      - name: Train and evaluate model
+        run: python src/train.py
+
+      - name: Verify generated files
+        run: |
+          test -f models/model.joblib
+          test -f reports/metrics.json
+          test -f reports/full_report.json
+
+      - name: Create GitHub Release and upload assets
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" \
+            --title "Release ${GITHUB_REF_NAME}" \
+            --notes "Automated release for ${GITHUB_REF_NAME}" \
+            models/model.joblib \
+            reports/metrics.json \
+            reports/full_report.json
