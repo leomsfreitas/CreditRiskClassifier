@@ -37,7 +37,7 @@ The project's objective is to train a classification model to predict credit car
 │ └── metrics.json
 ├── src/
 │ ├── train.py
-│ ├── transformers.py
+│ ├── preprocessing.py
 │ └── __init__.py
 ├── tests/
 │ └── test_pipeline.py
