@@ -6,10 +6,14 @@ on:
   pull_request:
     branches: [main]
 
+permissions:
+  contents: read
+  issues: write
+  pull-requests: write
+
 jobs:
   test-and-evaluate:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v5
@@ -59,8 +63,8 @@ jobs:
           script: |
             const fs = require("fs");
 
-            const pr    = JSON.parse(fs.readFileSync("reports/metrics.json"));
-            const main  = JSON.parse(fs.readFileSync("main-branch/reports/metrics.json"));
+            const pr   = JSON.parse(fs.readFileSync("reports/metrics.json"));
+            const main = JSON.parse(fs.readFileSync("main-branch/reports/metrics.json"));
 
             const emoji = (pr, main) => pr >= main ? "✅" : "❌";
             const fmt   = (v) => (v * 100).toFixed(2) + "%";
@@ -68,15 +72,15 @@ jobs:
             const body = `
             ## Model Comparison
 
-            | Metric    | main                    | PR                      |        |
-            |-----------|-------------------------|-------------------------|--------|
-            | Accuracy  | ${fmt(main.accuracy)}   | ${fmt(pr.accuracy)}     | ${emoji(pr.accuracy, main.accuracy)}  |
-            | F1        | ${fmt(main.f1)}         | ${fmt(pr.f1)}           | ${emoji(pr.f1, main.f1)}        |
-            | Precision | ${fmt(main.precision)}  | ${fmt(pr.precision)}    | ${emoji(pr.precision, main.precision)} |
-            | Recall    | ${fmt(main.recall)}     | ${fmt(pr.recall)}       | ${emoji(pr.recall, main.recall)}    |
+            | Metric    | main                  | PR                    |        |
+            |-----------|-----------------------|-----------------------|--------|
+            | Accuracy  | ${fmt(main.accuracy)} | ${fmt(pr.accuracy)}   | ${emoji(pr.accuracy, main.accuracy)} |
+            | F1        | ${fmt(main.f1)}       | ${fmt(pr.f1)}         | ${emoji(pr.f1, main.f1)} |
+            | Precision | ${fmt(main.precision)}| ${fmt(pr.precision)}  | ${emoji(pr.precision, main.precision)} |
+            | Recall    | ${fmt(main.recall)}   | ${fmt(pr.recall)}     | ${emoji(pr.recall, main.recall)} |
             `;
 
-            github.rest.issues.createComment({
+            await github.rest.issues.createComment({
               issue_number: context.issue.number,
               owner: context.repo.owner,
               repo: context.repo.repo,
