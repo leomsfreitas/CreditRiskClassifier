@@ -15,7 +15,8 @@ dependencies = [
     "matplotlib",
     "seaborn",
     "scikit-learn",
-    "joblib"
+    "joblib",
+    "xgboost"
 ]
 
 [project.optional-dependencies]
